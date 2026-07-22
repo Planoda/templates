@@ -1,0 +1,139 @@
+{
+  "slug": "okr-goals",
+  "name": "OKR / Goals Tracker",
+  "description": "Quarterly Objectives and Key Results modeled as an Epic per Objective with its Key Results as linked child issues, so progress rolls up automatically as work is completed.",
+  "category": "Strategy / Leadership",
+  "icon": "🎯",
+  "teams": [
+    {
+      "key": "OKR",
+      "name": "Leadership",
+      "description": "Company and team OKRs for the quarter.",
+      "icon": "🎯",
+      "color": "#6366f1"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Not Started", "type": "backlog", "color": "#94a3b8", "position": 0, "description": "Committed, work hasn't begun." },
+    { "name": "On Track", "type": "started", "color": "#22c55e", "position": 1, "description": "Tracking to hit the target this quarter." },
+    { "name": "At Risk", "type": "started", "color": "#f59e0b", "position": 2, "description": "Behind pace; needs attention." },
+    { "name": "Achieved", "type": "completed", "color": "#3b82f6", "position": 3, "description": "Target met or exceeded." },
+    { "name": "Missed", "type": "canceled", "color": "#ef4444", "position": 4, "description": "Quarter closed without hitting the target." }
+  ],
+  "labels": [
+    { "name": "company-goal", "color": "#6366f1", "emoji": "🏢", "description": "Company-wide objective." },
+    { "name": "team-goal", "color": "#94a3b8", "emoji": "👥", "description": "Owned by a single team." },
+    { "name": "on-track", "color": "#22c55e", "emoji": "🟢", "description": "Green status this check-in." },
+    { "name": "at-risk", "color": "#f59e0b", "emoji": "🟡", "description": "Yellow status this check-in." },
+    { "name": "off-track", "color": "#ef4444", "emoji": "🔴", "description": "Red status this check-in." }
+  ],
+  "issueTemplates": [
+    {
+      "ref": "obj-activation",
+      "team": "OKR",
+      "issueType": "Epic",
+      "title": "Objective: Increase new-user activation",
+      "descriptionMd": "## Objective\nNew signups reach their \"aha moment\" faster and stick around.\n\nOwner: Head of Product · Quarter: Q3",
+      "priority": 1,
+      "workflowState": "On Track",
+      "labels": ["company-goal", "on-track"]
+    },
+    {
+      "ref": "kr-activation-1",
+      "parent": "obj-activation",
+      "team": "OKR",
+      "issueType": "Key Result",
+      "title": "Key Result: Increase Day-7 activation from 22% to 35%",
+      "descriptionMd": "Measured via the `activation_completed` analytics event. Weekly check-in owner: Growth PM.",
+      "priority": 1,
+      "workflowState": "On Track",
+      "labels": ["on-track"]
+    },
+    {
+      "ref": "kr-activation-2",
+      "parent": "obj-activation",
+      "team": "OKR",
+      "issueType": "Key Result",
+      "title": "Key Result: Reduce time-to-first-value from 12 min to 4 min",
+      "descriptionMd": "Time from signup to first completed core action, p50.",
+      "priority": 2,
+      "workflowState": "At Risk",
+      "labels": ["at-risk"]
+    },
+    {
+      "ref": "obj-reliability",
+      "team": "OKR",
+      "issueType": "Epic",
+      "title": "Objective: Raise platform reliability",
+      "descriptionMd": "## Objective\nCustomers stop noticing us as \"the flaky one.\"\n\nOwner: Head of Engineering · Quarter: Q3",
+      "priority": 1,
+      "workflowState": "Not Started",
+      "labels": ["company-goal"]
+    },
+    {
+      "ref": "kr-reliability-1",
+      "parent": "obj-reliability",
+      "team": "OKR",
+      "issueType": "Key Result",
+      "title": "Key Result: 99.95% uptime, measured monthly",
+      "descriptionMd": "Tracked via the status-page incident log. Any SEV-1 counts against the target.",
+      "priority": 1,
+      "workflowState": "Not Started",
+      "labels": []
+    },
+    {
+      "ref": "kr-reliability-2",
+      "parent": "obj-reliability",
+      "team": "OKR",
+      "issueType": "Key Result",
+      "title": "Key Result: Reduce P95 API latency from 800ms to 300ms",
+      "descriptionMd": "Measured across the top 20 endpoints by traffic.",
+      "priority": 2,
+      "workflowState": "Not Started",
+      "labels": []
+    },
+    {
+      "ref": "obj-expansion",
+      "team": "OKR",
+      "issueType": "Epic",
+      "title": "Objective: Grow expansion revenue from existing accounts",
+      "descriptionMd": "## Objective\nExisting customers grow with us instead of churning to a competitor.\n\nOwner: Head of Sales · Quarter: Q3",
+      "priority": 2,
+      "workflowState": "At Risk",
+      "labels": ["team-goal", "at-risk"]
+    },
+    {
+      "ref": "kr-expansion-1",
+      "parent": "obj-expansion",
+      "team": "OKR",
+      "issueType": "Key Result",
+      "title": "Key Result: Net revenue retention from 98% to 110%",
+      "descriptionMd": "Tracked monthly in the finance dashboard.",
+      "priority": 2,
+      "workflowState": "At Risk",
+      "labels": ["at-risk"]
+    }
+  ],
+  "views": [
+    {
+      "name": "OKR Board",
+      "layout": "board",
+      "description": "All objectives grouped by check-in status.",
+      "scope": "workspace",
+      "groupBy": "status"
+    },
+    {
+      "name": "Company Objectives",
+      "layout": "list",
+      "description": "Top-level objectives only (filter to Epics), for the exec review.",
+      "scope": "workspace",
+      "filter": [{ "field": "issue_type", "op": "in", "values": ["Epic"] }]
+    },
+    {
+      "name": "Progress Table",
+      "layout": "table",
+      "description": "Objectives and key results with owner, status, and quarter columns for the weekly check-in doc.",
+      "scope": "workspace"
+    }
+  ]
+}

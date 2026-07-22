@@ -1,0 +1,121 @@
+{
+  "slug": "bug-triage",
+  "name": "Bug Triage & Support Queue",
+  "description": "A severity-driven bug intake and triage workflow — new reports land in Triage, get a severity label within your SLA, and flow through confirmation, fix, and verification.",
+  "category": "Support / QA",
+  "icon": "🐛",
+  "teams": [
+    {
+      "key": "QA",
+      "name": "Quality & Support",
+      "description": "Owns bug triage, severity classification, and customer-facing incident communication.",
+      "icon": "🔎",
+      "color": "#ef4444"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Triage", "type": "triage", "color": "#f59e0b", "position": 0, "description": "New report, not yet classified." },
+    { "name": "Confirmed", "type": "unstarted", "color": "#64748b", "position": 1, "description": "Reproduced and severity-tagged; queued for a fix." },
+    { "name": "In Progress", "type": "started", "color": "#3b82f6", "position": 2, "description": "A fix is being worked." },
+    { "name": "Needs Verification", "type": "started", "color": "#a855f7", "position": 3, "description": "Fix shipped; awaiting QA / reporter confirmation." },
+    { "name": "Resolved", "type": "completed", "color": "#22c55e", "position": 4, "description": "Verified fixed." },
+    { "name": "Won't Fix / Duplicate", "type": "canceled", "color": "#94a3b8", "position": 5, "description": "Not actionable, by design, or a duplicate of another report." }
+  ],
+  "labels": [
+    { "name": "sev-1-critical", "color": "#dc2626", "emoji": "🔴", "description": "Data loss, outage, or security issue — fix immediately." },
+    { "name": "sev-2-high", "color": "#f97316", "emoji": "🟠", "description": "Major feature broken for many users — fix this sprint." },
+    { "name": "sev-3-medium", "color": "#eab308", "emoji": "🟡", "description": "Workaround exists — fix soon." },
+    { "name": "sev-4-low", "color": "#84cc16", "emoji": "🟢", "description": "Cosmetic or edge-case — fix when convenient." },
+    { "name": "regression", "color": "#a855f7", "emoji": "⏪", "description": "Worked before a recent release; broken now." },
+    { "name": "needs-repro", "color": "#94a3b8", "emoji": "❓", "description": "Can't reproduce yet — needs more info from the reporter." },
+    { "name": "customer-reported", "color": "#3b82f6", "emoji": "📣", "description": "Filed by or on behalf of an external customer." }
+  ],
+  "issueTemplates": [
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "[Bug report] Checkout fails with 500 on international addresses",
+      "descriptionMd": "### Steps to reproduce\n1. Add item to cart\n2. Enter a non-US shipping address\n3. Click \"Place order\"\n\n### Expected\nOrder is placed.\n\n### Actual\n`500 Internal Server Error`.\n\n### Environment\nBrowser / OS / account / plan.",
+      "priority": 1,
+      "workflowState": "Triage",
+      "labels": ["sev-1-critical", "customer-reported"]
+    },
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "Export to CSV truncates rows over 10,000",
+      "descriptionMd": "Reported by 3 enterprise customers this week. Repro: create a view with >10k rows, export, count rows in the file.",
+      "priority": 2,
+      "workflowState": "Confirmed",
+      "labels": ["sev-2-high", "customer-reported"]
+    },
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "Avatar upload rotates portrait photos 90°",
+      "descriptionMd": "EXIF orientation isn't respected on upload. Affects iPhone photos taken in portrait mode.",
+      "priority": 3,
+      "workflowState": "Confirmed",
+      "labels": ["sev-3-medium"]
+    },
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "Regression: bulk-archive stopped working after the v2.4 release",
+      "descriptionMd": "Worked in v2.3. Bisect suggests the `bulkArchive` mutation change in the last release.",
+      "priority": 1,
+      "workflowState": "In Progress",
+      "labels": ["sev-1-critical", "regression"]
+    },
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "Tooltip text overflows on narrow (< 360px) screens",
+      "descriptionMd": "Cosmetic only. Affects the priority tooltip in the issue row on very small phones.",
+      "priority": 4,
+      "workflowState": "Triage",
+      "labels": ["sev-4-low"]
+    },
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "\"Duplicate view\" sometimes copies the wrong filters",
+      "descriptionMd": "Can't reproduce consistently yet. Need the exact filter combination from the reporter.",
+      "priority": 3,
+      "workflowState": "Triage",
+      "labels": ["sev-3-medium", "needs-repro"]
+    },
+    {
+      "team": "QA",
+      "issueType": "Bug",
+      "title": "Verify fix: notification badge count desyncs after marking all read",
+      "descriptionMd": "Fix merged in #482. Confirm the unread badge matches the actual unread count after \"mark all as read\" on slow connections.",
+      "priority": 2,
+      "workflowState": "Needs Verification",
+      "labels": ["sev-2-high"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Triage Queue",
+      "layout": "list",
+      "description": "Everything new and unclassified — work this down to zero daily.",
+      "scope": "team",
+      "filter": [{ "field": "status", "op": "in", "values": ["Triage"] }]
+    },
+    {
+      "name": "By Severity",
+      "layout": "board",
+      "description": "Board grouped by severity label so SEV-1s are always visible at a glance.",
+      "scope": "team",
+      "groupBy": "label",
+      "display": { "swimlaneBy": "priority" }
+    },
+    {
+      "name": "All Bugs — Table",
+      "layout": "table",
+      "description": "Full spreadsheet view for weekly bug-count reporting.",
+      "scope": "workspace"
+    }
+  ]
+}

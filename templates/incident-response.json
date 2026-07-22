@@ -1,0 +1,117 @@
+{
+  "slug": "incident-response",
+  "name": "Incident Response",
+  "description": "A severity-ranked on-call workflow from detection to postmortem, with action items tracked as linked follow-up issues so lessons learned don't get lost after the fire is out.",
+  "category": "Engineering / SRE",
+  "icon": "🚨",
+  "teams": [
+    {
+      "key": "SRE",
+      "name": "Site Reliability",
+      "description": "Owns incident response, on-call, and postmortems.",
+      "icon": "🚨",
+      "color": "#dc2626"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Detected", "type": "triage", "color": "#f59e0b", "position": 0, "description": "Alert fired or reported; severity not yet confirmed." },
+    { "name": "Investigating", "type": "started", "color": "#f97316", "position": 1, "description": "Root cause not yet identified." },
+    { "name": "Identified", "type": "started", "color": "#3b82f6", "position": 2, "description": "Root cause known; fix or mitigation in progress." },
+    { "name": "Monitoring", "type": "started", "color": "#a855f7", "position": 3, "description": "Mitigation deployed; watching for recurrence." },
+    { "name": "Resolved", "type": "completed", "color": "#22c55e", "position": 4, "description": "Incident closed; postmortem may still be pending." },
+    { "name": "Not an Incident", "type": "canceled", "color": "#94a3b8", "position": 5, "description": "False alarm or expected behavior." }
+  ],
+  "labels": [
+    { "name": "sev-1", "color": "#dc2626", "emoji": "🔴", "description": "Full outage or data loss — page immediately." },
+    { "name": "sev-2", "color": "#f97316", "emoji": "🟠", "description": "Major degradation, partial outage." },
+    { "name": "sev-3", "color": "#eab308", "emoji": "🟡", "description": "Minor degradation, limited blast radius." },
+    { "name": "customer-impact", "color": "#3b82f6", "emoji": "👥", "description": "Customers noticed or were affected." },
+    { "name": "data-loss-risk", "color": "#dc2626", "emoji": "💾", "description": "Possible data integrity or loss risk — escalate." },
+    { "name": "postmortem-required", "color": "#a855f7", "emoji": "📝", "description": "SEV-1/SEV-2 policy requires a written postmortem." },
+    { "name": "action-item", "color": "#94a3b8", "emoji": "✅", "description": "A postmortem follow-up task." }
+  ],
+  "issueTemplates": [
+    {
+      "ref": "inc-2026-07-payments",
+      "team": "SRE",
+      "issueType": "Incident",
+      "title": "[INC] Payment webhook processing delayed up to 40 minutes",
+      "descriptionMd": "### Impact\nWebhook-driven order confirmations delayed for ~2,100 customers.\n\n### Timeline\n- 14:02 — Alert fired: webhook queue depth > 5,000\n- 14:08 — On-call acknowledged\n- 14:35 — Root cause identified: downstream provider rate-limiting us\n- 15:10 — Mitigation deployed (backoff + concurrency cap)\n\n### Status\nMonitoring for recurrence.",
+      "priority": 1,
+      "workflowState": "Monitoring",
+      "labels": ["sev-1", "customer-impact", "postmortem-required"]
+    },
+    {
+      "ref": "inc-postmortem-action-1",
+      "parent": "inc-2026-07-payments",
+      "team": "SRE",
+      "issueType": "Action Item",
+      "title": "Add circuit breaker around the payment-provider webhook client",
+      "descriptionMd": "Prevents a single slow/rate-limited downstream dependency from backing up our whole queue again.",
+      "priority": 1,
+      "workflowState": "Detected",
+      "labels": ["action-item"]
+    },
+    {
+      "ref": "inc-postmortem-action-2",
+      "parent": "inc-2026-07-payments",
+      "team": "SRE",
+      "issueType": "Action Item",
+      "title": "Add a queue-depth alert threshold before it becomes customer-visible",
+      "descriptionMd": "Current alert fired only once the delay was already noticeable. Lower the threshold and add an early-warning tier.",
+      "priority": 2,
+      "workflowState": "Detected",
+      "labels": ["action-item"]
+    },
+    {
+      "team": "SRE",
+      "issueType": "Incident",
+      "title": "[INC] Elevated 500s on the search endpoint",
+      "descriptionMd": "### Impact\nSearch returning errors for ~8% of requests.\n\n### Timeline\n- 09:14 — Alert fired\n- 09:20 — Investigating: correlates with a deploy 10 minutes prior",
+      "priority": 2,
+      "workflowState": "Investigating",
+      "labels": ["sev-2", "customer-impact"]
+    },
+    {
+      "team": "SRE",
+      "issueType": "Incident",
+      "title": "[INC] Database replica lag exceeded 30s",
+      "descriptionMd": "### Impact\nStale reads on the analytics dashboard only; no writes affected.\n\n### Timeline\n- 03:41 — Alert fired (off-hours, no page — below paging threshold)",
+      "priority": 3,
+      "workflowState": "Resolved",
+      "labels": ["sev-3"]
+    },
+    {
+      "team": "SRE",
+      "issueType": "Incident",
+      "title": "[INC] Suspected data-loss: bulk-delete ran against the wrong workspace filter",
+      "descriptionMd": "### Impact\nUNDER INVESTIGATION — possible cross-tenant data loss from a migration script.\n\n### Immediate actions\n- Restoring from the pre-migration backup\n- Freezing writes to the affected table until confirmed safe",
+      "priority": 1,
+      "workflowState": "Investigating",
+      "labels": ["sev-1", "data-loss-risk", "postmortem-required"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Active Incidents",
+      "layout": "board",
+      "description": "Everything not yet resolved, grouped by status — the on-call dashboard.",
+      "scope": "team",
+      "groupBy": "status",
+      "filter": [{ "field": "status_type", "op": "not_in", "values": ["completed", "canceled"] }]
+    },
+    {
+      "name": "Postmortem Tracker",
+      "layout": "list",
+      "description": "Resolved incidents that still need a written postmortem, plus their open action items.",
+      "scope": "team",
+      "filter": [{ "field": "label", "op": "in", "values": ["postmortem-required"] }]
+    },
+    {
+      "name": "All Incidents — Table",
+      "layout": "table",
+      "description": "Full history with severity, duration, and customer-impact columns for the monthly reliability review.",
+      "scope": "team"
+    }
+  ]
+}

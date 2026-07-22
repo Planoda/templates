@@ -1,0 +1,120 @@
+{
+  "slug": "customer-feedback",
+  "name": "Customer Feedback Intake",
+  "description": "A single intake queue for feature requests, bug reports, and praise from support tickets, sales calls, and in-app widgets — themed, prioritized, and closing the loop when shipped.",
+  "category": "Product / Customer Success",
+  "icon": "💬",
+  "teams": [
+    {
+      "key": "CS",
+      "name": "Customer Success",
+      "description": "Triages incoming feedback and closes the loop with customers when items ship.",
+      "icon": "💬",
+      "color": "#3b82f6"
+    }
+  ],
+  "workflowStates": [
+    { "name": "New", "type": "triage", "color": "#f59e0b", "position": 0, "description": "Just came in — not yet reviewed." },
+    { "name": "Reviewing", "type": "unstarted", "color": "#a855f7", "position": 1, "description": "Being evaluated for themes and impact." },
+    { "name": "Planned", "type": "unstarted", "color": "#64748b", "position": 2, "description": "Accepted and linked to a roadmap item." },
+    { "name": "In Progress", "type": "started", "color": "#3b82f6", "position": 3, "description": "The linked roadmap item is being built." },
+    { "name": "Shipped", "type": "completed", "color": "#22c55e", "position": 4, "description": "Live — time to close the loop with the requester." },
+    { "name": "Declined", "type": "canceled", "color": "#ef4444", "position": 5, "description": "Not planned, with a reason recorded for future reference." }
+  ],
+  "labels": [
+    { "name": "feature-request", "color": "#3b82f6", "emoji": "💡", "description": "Wants something new." },
+    { "name": "bug-report", "color": "#ef4444", "emoji": "🐞", "description": "Reports something broken." },
+    { "name": "praise", "color": "#22c55e", "emoji": "🙌", "description": "Positive feedback — feed to marketing/testimonials." },
+    { "name": "churn-risk", "color": "#dc2626", "emoji": "⚠️", "description": "Customer signaled they may leave." },
+    { "name": "enterprise", "color": "#a855f7", "emoji": "🏢", "description": "From an enterprise / high-ACV account." },
+    { "name": "nps-detractor", "color": "#f59e0b", "emoji": "📉", "description": "Sourced from a detractor NPS response." }
+  ],
+  "issueTemplates": [
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Feedback] Wants bulk CSV import for existing customers migrating off spreadsheets",
+      "descriptionMd": "**Source:** Sales call, Acme Corp (enterprise, $42k ARR)\n\n**Quote:** \"We have 4,000 rows in a spreadsheet — if we can't import them on day one, we're not switching.\"",
+      "priority": 1,
+      "workflowState": "New",
+      "labels": ["feature-request", "enterprise", "churn-risk"]
+    },
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Feedback] Would love a dark mode",
+      "descriptionMd": "**Source:** In-app feedback widget (12 upvotes)\n\nRecurring request — check the feature-request tag for volume.",
+      "priority": 3,
+      "workflowState": "Reviewing",
+      "labels": ["feature-request"]
+    },
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Bug] Notification emails arrive in the wrong timezone",
+      "descriptionMd": "**Source:** Support ticket #4821\n\nReminder emails show UTC instead of the workspace's configured timezone.",
+      "priority": 2,
+      "workflowState": "New",
+      "labels": ["bug-report"]
+    },
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Praise] \"This is the first tool my whole team actually uses\"",
+      "descriptionMd": "**Source:** NPS survey, score 10\n\nGreat quote for the testimonials page — get permission to use it.",
+      "priority": 4,
+      "workflowState": "New",
+      "labels": ["praise"]
+    },
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Feedback] Needs SAML SSO before renewal",
+      "descriptionMd": "**Source:** Renewal call, Globex Inc (enterprise)\n\nBlocking a $60k renewal. Linked to the SSO roadmap item.",
+      "priority": 1,
+      "workflowState": "Planned",
+      "labels": ["feature-request", "enterprise", "churn-risk"]
+    },
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Feedback] Mobile app crashes on opening large attachments",
+      "descriptionMd": "**Source:** App Store review, 1 star\n\nAffects Android only so far, 6 reports this week.",
+      "priority": 2,
+      "workflowState": "Reviewing",
+      "labels": ["bug-report", "nps-detractor"]
+    },
+    {
+      "team": "CS",
+      "issueType": "Feedback",
+      "title": "[Feedback] Wants a public status page",
+      "descriptionMd": "**Source:** Multiple support tickets during last incident\n\nCustomers want to self-serve \"is it just me\" during outages.",
+      "priority": 3,
+      "workflowState": "Shipped",
+      "labels": ["feature-request"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Intake Queue",
+      "layout": "list",
+      "description": "Everything new, oldest first — the daily triage list.",
+      "scope": "team",
+      "filter": [{ "field": "status", "op": "in", "values": ["New"] }]
+    },
+    {
+      "name": "By Theme",
+      "layout": "board",
+      "description": "Board grouped by label to spot recurring themes at a glance.",
+      "scope": "workspace",
+      "groupBy": "label"
+    },
+    {
+      "name": "Roadmap Impact",
+      "layout": "table",
+      "description": "Planned/In Progress/Shipped items with a count of linked feedback per row.",
+      "scope": "workspace",
+      "display": { "aggregations": { "group": { "field": "count", "op": "count" } } }
+    }
+  ]
+}

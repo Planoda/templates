@@ -1,0 +1,144 @@
+{
+  "slug": "sprint-board",
+  "name": "Sprint Board",
+  "description": "A two-week agile sprint workflow for software teams — backlog grooming, sprint planning, a Kanban board grouped by status, and a burndown-friendly points estimate scale.",
+  "category": "Engineering / Agile",
+  "icon": "🏃",
+  "teams": [
+    {
+      "key": "ENG",
+      "name": "Engineering",
+      "description": "Core product engineering team running two-week sprints with Fibonacci story points.",
+      "icon": "💻",
+      "color": "#6366f1",
+      "estimateScale": "points",
+      "estimatePoints": [0, 1, 2, 3, 5, 8, 13],
+      "cycleEnabled": true,
+      "cycleDurationDays": 14,
+      "cycleStartDay": 1
+    }
+  ],
+  "workflowStates": [
+    { "name": "Backlog", "type": "backlog", "color": "#94a3b8", "position": 0, "description": "Not yet scoped or scheduled." },
+    { "name": "Todo", "type": "unstarted", "color": "#64748b", "position": 1, "description": "Scoped, estimated, and pulled into the current sprint." },
+    { "name": "In Progress", "type": "started", "color": "#3b82f6", "position": 2, "description": "Actively being worked." },
+    { "name": "In Review", "type": "started", "color": "#a855f7", "position": 3, "description": "Code review / QA pass in flight." },
+    { "name": "Done", "type": "completed", "color": "#22c55e", "position": 4, "description": "Merged and verified in the sprint." },
+    { "name": "Canceled", "type": "canceled", "color": "#ef4444", "position": 5, "description": "Won't be done this sprint or ever." }
+  ],
+  "labels": [
+    { "name": "bug", "color": "#ef4444", "emoji": "🐞", "description": "Something is broken." },
+    { "name": "feature", "color": "#22c55e", "emoji": "✨", "description": "New user-facing capability." },
+    { "name": "tech-debt", "color": "#f59e0b", "emoji": "🧰", "description": "Refactor, cleanup, or paying down debt." },
+    { "name": "design", "color": "#a855f7", "emoji": "🎨", "description": "Needs design input or a design pass." },
+    { "name": "chore", "color": "#94a3b8", "emoji": "🧹", "description": "Tooling, deps, CI, housekeeping." },
+    { "name": "spike", "color": "#3b82f6", "emoji": "🔬", "description": "Time-boxed research/investigation." }
+  ],
+  "issueTemplates": [
+    {
+      "ref": "sprint-goal",
+      "team": "ENG",
+      "issueType": "Epic",
+      "title": "Sprint Goal: ship the [feature] end to end",
+      "descriptionMd": "## Sprint Goal\n\nOne sentence describing the outcome this sprint delivers.\n\n### Success criteria\n- [ ] Criterion 1\n- [ ] Criterion 2\n\n### Risks\n- Risk / dependency to watch",
+      "priority": 2,
+      "workflowState": "Todo",
+      "labels": ["feature"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Chore",
+      "title": "Set up CI pipeline gate for main branch",
+      "descriptionMd": "Add lint + typecheck + test as required checks before merge to `main`.",
+      "priority": 2,
+      "estimate": 3,
+      "workflowState": "Todo",
+      "labels": ["chore"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Bug",
+      "title": "Fix flaky test in checkout flow",
+      "descriptionMd": "`checkout.spec.ts` fails intermittently in CI (~1 in 20 runs). Repro locally with `--repeat-each=20`.",
+      "priority": 1,
+      "estimate": 2,
+      "workflowState": "Todo",
+      "labels": ["bug", "tech-debt"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Feature",
+      "title": "Implement dark mode toggle",
+      "descriptionMd": "Add a theme toggle in settings; persist preference; respect `prefers-color-scheme` by default.",
+      "priority": 3,
+      "estimate": 5,
+      "workflowState": "Backlog",
+      "labels": ["feature", "design"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Chore",
+      "title": "Refactor auth middleware into composable guards",
+      "descriptionMd": "Current middleware is one 400-line function. Split into small, testable guard functions.",
+      "priority": 3,
+      "estimate": 5,
+      "workflowState": "Backlog",
+      "labels": ["tech-debt"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Feature",
+      "title": "Add rate limiting to the public API",
+      "descriptionMd": "Token-bucket limiter per API key. Return `429` with `Retry-After`. Document limits in API docs.",
+      "priority": 2,
+      "estimate": 8,
+      "workflowState": "Backlog",
+      "labels": ["feature"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Spike",
+      "title": "Spike: evaluate WebSocket library for live presence",
+      "descriptionMd": "Compare Socket.IO vs. raw `ws` vs. a hosted realtime provider. Timebox: 1 day. Output: a short recommendation doc.",
+      "priority": 3,
+      "estimate": 3,
+      "workflowState": "Backlog",
+      "labels": ["spike"]
+    },
+    {
+      "team": "ENG",
+      "issueType": "Chore",
+      "title": "Write onboarding docs for new engineers",
+      "descriptionMd": "One page: repo layout, how to run locally, how to ship a PR, who to ask about what.",
+      "priority": 4,
+      "estimate": 2,
+      "workflowState": "Backlog",
+      "labels": ["chore"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Sprint Board",
+      "layout": "board",
+      "description": "Kanban board grouped by workflow status for the active sprint.",
+      "scope": "team",
+      "groupBy": "status",
+      "filter": [{ "field": "cycle", "op": "in", "values": ["current"] }],
+      "display": { "swimlaneBy": "none" }
+    },
+    {
+      "name": "Sprint Backlog",
+      "layout": "list",
+      "description": "Flat, ranked list of everything not yet started.",
+      "scope": "team",
+      "filter": [{ "field": "status_type", "op": "in", "values": ["backlog", "unstarted"] }]
+    },
+    {
+      "name": "This Sprint — Table",
+      "layout": "table",
+      "description": "Spreadsheet view of the current cycle with estimate, assignee, and status columns.",
+      "scope": "team",
+      "filter": [{ "field": "cycle", "op": "in", "values": ["current"] }]
+    }
+  ]
+}

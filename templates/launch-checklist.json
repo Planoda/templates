@@ -1,0 +1,153 @@
+{
+  "slug": "launch-checklist",
+  "name": "Launch Checklist",
+  "description": "A go-to-market launch plan as a single Epic with pre-launch, day-of, and post-launch tasks as linked child issues, so engineering, marketing, and support are all working off the same checklist.",
+  "category": "Product / Go-to-Market",
+  "icon": "🚀",
+  "teams": [
+    {
+      "key": "GTM",
+      "name": "Go-to-Market",
+      "description": "Coordinates cross-functional launch work across engineering, marketing, and support.",
+      "icon": "🚀",
+      "color": "#f59e0b"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Not Started", "type": "backlog", "color": "#94a3b8", "position": 0, "description": "Not yet begun." },
+    { "name": "In Progress", "type": "started", "color": "#3b82f6", "position": 1, "description": "Being worked on." },
+    { "name": "Blocked", "type": "started", "color": "#dc2626", "position": 2, "description": "Stuck on a dependency — see the blocker label." },
+    { "name": "Done", "type": "completed", "color": "#22c55e", "position": 3, "description": "Complete." },
+    { "name": "Cut", "type": "canceled", "color": "#ef4444", "position": 4, "description": "Descoped from this launch." }
+  ],
+  "labels": [
+    { "name": "pre-launch", "color": "#3b82f6", "emoji": "🔧", "description": "Must be done before launch day." },
+    { "name": "day-of", "color": "#f59e0b", "emoji": "🎬", "description": "Happens on launch day itself." },
+    { "name": "post-launch", "color": "#22c55e", "emoji": "📊", "description": "Follow-up in the days/weeks after." },
+    { "name": "blocker", "color": "#dc2626", "emoji": "⛔", "description": "Blocking the launch — escalate." },
+    { "name": "marketing", "color": "#a855f7", "emoji": "📣", "description": "Owned by marketing." },
+    { "name": "engineering", "color": "#6366f1", "emoji": "💻", "description": "Owned by engineering." }
+  ],
+  "issueTemplates": [
+    {
+      "ref": "launch-epic",
+      "team": "GTM",
+      "issueType": "Epic",
+      "title": "Launch: [Product Name] v1",
+      "descriptionMd": "## Launch date\n[Target date]\n\n## Launch tier\nMajor / Minor / Silent\n\n## Success metrics\n- Signups in week 1\n- Press/social mentions\n- Activation rate of new signups from this launch",
+      "priority": 1,
+      "workflowState": "In Progress",
+      "labels": []
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Feature flag rollout plan (0% → 10% → 50% → 100%)",
+      "descriptionMd": "Define the rollout stages and the rollback trigger conditions at each stage.",
+      "priority": 1,
+      "workflowState": "In Progress",
+      "labels": ["pre-launch", "engineering"],
+      "dueDateOffsetDays": -5
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Write and schedule the launch blog post",
+      "descriptionMd": "Draft due 3 days before launch; scheduled to publish at 9am launch day.",
+      "priority": 2,
+      "workflowState": "Not Started",
+      "labels": ["pre-launch", "marketing"],
+      "dueDateOffsetDays": -3
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Update pricing page and in-app upgrade prompts",
+      "descriptionMd": "Ensure the new capability is reflected wherever pricing/plan gating is shown.",
+      "priority": 2,
+      "workflowState": "Not Started",
+      "labels": ["pre-launch", "marketing", "engineering"],
+      "dueDateOffsetDays": -2
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Brief support team + publish an internal FAQ",
+      "descriptionMd": "Support needs to know what's changing before customers start asking.",
+      "priority": 2,
+      "workflowState": "Not Started",
+      "labels": ["pre-launch"],
+      "dueDateOffsetDays": -1
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Flip the feature flag to 100% and watch dashboards",
+      "descriptionMd": "War-room channel open for the first 2 hours post-flip. Rollback plan: flip flag back to 0%, no deploy needed.",
+      "priority": 1,
+      "workflowState": "Not Started",
+      "labels": ["day-of", "engineering"],
+      "dueDateOffsetDays": 0
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Post launch announcement on X / LinkedIn / Product Hunt",
+      "descriptionMd": "Coordinate timing with the blog post going live.",
+      "priority": 2,
+      "workflowState": "Not Started",
+      "labels": ["day-of", "marketing"],
+      "dueDateOffsetDays": 0
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Set up a status-page / monitoring dashboard for the new feature",
+      "descriptionMd": "Track error rate and latency for the new code path specifically, separate from the aggregate dashboard.",
+      "priority": 1,
+      "workflowState": "Blocked",
+      "labels": ["pre-launch", "engineering", "blocker"],
+      "dueDateOffsetDays": -4
+    },
+    {
+      "parent": "launch-epic",
+      "team": "GTM",
+      "issueType": "Task",
+      "title": "Send the week-1 launch retro and metrics readout",
+      "descriptionMd": "Signups, activation, error rate, and qualitative feedback from support/sales.",
+      "priority": 3,
+      "workflowState": "Not Started",
+      "labels": ["post-launch"],
+      "dueDateOffsetDays": 7
+    }
+  ],
+  "views": [
+    {
+      "name": "Launch Checklist",
+      "layout": "list",
+      "description": "The full checklist grouped by pre-launch / day-of / post-launch.",
+      "scope": "team",
+      "groupBy": "label"
+    },
+    {
+      "name": "Launch Timeline",
+      "layout": "timeline",
+      "description": "Every task plotted against the launch date, so slippage is visible immediately.",
+      "scope": "team"
+    },
+    {
+      "name": "Launch Board",
+      "layout": "board",
+      "description": "Working board for the launch team, grouped by status.",
+      "scope": "team",
+      "groupBy": "status"
+    }
+  ]
+}

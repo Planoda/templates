@@ -1,0 +1,109 @@
+{
+  "slug": "agent-governance",
+  "name": "AI Agent Governance (Propose / Approve)",
+  "description": "A transparent workflow for treating AI agents as teammates: every agent-proposed action lands as a reviewable issue before it executes, with destructive actions forced through human approval.",
+  "category": "AI / Operations",
+  "icon": "🤖",
+  "teams": [
+    {
+      "key": "AIOPS",
+      "name": "AI Operations",
+      "description": "Reviews and approves autonomous agent proposals before they run.",
+      "icon": "🤖",
+      "color": "#a855f7"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Proposed", "type": "triage", "color": "#f59e0b", "position": 0, "description": "An agent proposed this action; awaiting classification." },
+    { "name": "Under Review", "type": "unstarted", "color": "#a855f7", "position": 1, "description": "A human is evaluating the proposal." },
+    { "name": "Approved", "type": "started", "color": "#3b82f6", "position": 2, "description": "Approved; queued to execute." },
+    { "name": "Executing", "type": "started", "color": "#6366f1", "position": 3, "description": "The agent is carrying out the approved action." },
+    { "name": "Completed", "type": "completed", "color": "#22c55e", "position": 4, "description": "Executed successfully; outcome logged." },
+    { "name": "Rejected", "type": "canceled", "color": "#ef4444", "position": 5, "description": "Denied — the agent will not perform this action." }
+  ],
+  "labels": [
+    { "name": "read-only", "color": "#22c55e", "emoji": "👁️", "description": "No side effects — safe to auto-approve." },
+    { "name": "destructive", "color": "#dc2626", "emoji": "⚠️", "description": "Deletes, archives, or otherwise can't be trivially undone." },
+    { "name": "needs-human-approval", "color": "#f59e0b", "emoji": "🙋", "description": "Policy requires an explicit human sign-off." },
+    { "name": "auto-approved", "color": "#3b82f6", "emoji": "⚡", "description": "Approved automatically by policy (low-risk + high confidence)." },
+    { "name": "high-risk", "color": "#a855f7", "emoji": "🚨", "description": "Touches billing, auth, or customer-facing data at scale." }
+  ],
+  "issueTemplates": [
+    {
+      "team": "AIOPS",
+      "issueType": "Agent Proposal",
+      "title": "Agent proposal: Bulk-archive issues untouched for 180+ days",
+      "descriptionMd": "**Agent:** triage-bot v2\n\n**Action:** `bulkArchive` on 340 matching issues across 4 teams.\n\n**Reasoning:** These issues have had zero activity for 180+ days and match the workspace's staleness policy.\n\n**Reversible:** Yes — archived issues can be restored within 90 days.",
+      "priority": 2,
+      "workflowState": "Under Review",
+      "labels": ["destructive", "needs-human-approval"]
+    },
+    {
+      "team": "AIOPS",
+      "issueType": "Agent Proposal",
+      "title": "Agent proposal: Auto-triage new bug reports with confidence ≥ 0.85",
+      "descriptionMd": "**Agent:** triage-bot v2\n\n**Action:** On issue create, classify severity + route to the owning team when the model's confidence is ≥ 0.85; otherwise leave in the human triage queue.\n\n**Reasoning:** Reduces time-to-first-response on clear-cut reports without risking a wrong route on ambiguous ones.\n\n**Reversible:** Yes — routing can be manually corrected.",
+      "priority": 2,
+      "workflowState": "Approved",
+      "labels": ["auto-approved"]
+    },
+    {
+      "team": "AIOPS",
+      "issueType": "Agent Proposal",
+      "title": "Agent proposal: Send a weekly digest email to team leads",
+      "descriptionMd": "**Agent:** digest-bot\n\n**Action:** Send a summary email every Monday 8am to each team lead (open issues, overdue items, cycle progress).\n\n**Reasoning:** Requested by 3 team leads; read-only, no data mutation.\n\n**Reversible:** N/A — no state change.",
+      "priority": 3,
+      "workflowState": "Completed",
+      "labels": ["read-only", "auto-approved"]
+    },
+    {
+      "team": "AIOPS",
+      "issueType": "Agent Proposal",
+      "title": "Agent proposal: Merge 14 duplicate customer requests into their canonical threads",
+      "descriptionMd": "**Agent:** dedupe-bot\n\n**Action:** Merge requests flagged as ≥ 0.9 semantic-similarity duplicates.\n\n**Reasoning:** Reduces noise in the feedback intake queue; each merge preserves the original text as a linked comment.\n\n**Reversible:** Partially — merges can be manually unwound but require support-team review.",
+      "priority": 2,
+      "workflowState": "Proposed",
+      "labels": ["destructive", "needs-human-approval"]
+    },
+    {
+      "team": "AIOPS",
+      "issueType": "Agent Proposal",
+      "title": "Agent proposal: Permanently delete draft issues abandoned 90+ days ago",
+      "descriptionMd": "**Agent:** cleanup-bot\n\n**Action:** Hard-delete 58 draft (never-published) issues with no edits in 90+ days.\n\n**Reasoning:** Drafts are pre-publication scratch space; deletion is safe by design.\n\n**Reversible:** NO — this is a hard delete, not an archive. Requires explicit human approval regardless of confidence.",
+      "priority": 1,
+      "workflowState": "Proposed",
+      "labels": ["destructive", "high-risk", "needs-human-approval"]
+    },
+    {
+      "team": "AIOPS",
+      "issueType": "Agent Proposal",
+      "title": "Agent proposal: Rewrite 6 issue titles flagged as unclear for search",
+      "descriptionMd": "**Agent:** clarity-bot\n\n**Action:** Suggest clearer titles for issues whose current title scored low on a clarity heuristic. Applies only after human accepts each suggestion individually.\n\n**Reasoning:** Improves search/discoverability.\n\n**Reversible:** Yes — original title is kept in issue history.",
+      "priority": 4,
+      "workflowState": "Rejected",
+      "labels": ["needs-human-approval"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Pending Approval",
+      "layout": "list",
+      "description": "Everything waiting on a human decision — the queue an approver checks first.",
+      "scope": "workspace",
+      "filter": [{ "field": "status", "op": "in", "values": ["Proposed", "Under Review"] }]
+    },
+    {
+      "name": "Audit Log",
+      "layout": "table",
+      "description": "Every agent action, its approver, and its outcome — for compliance review.",
+      "scope": "workspace"
+    },
+    {
+      "name": "All Agent Activity",
+      "layout": "board",
+      "description": "Board grouped by status across every connected agent.",
+      "scope": "workspace",
+      "groupBy": "status"
+    }
+  ]
+}

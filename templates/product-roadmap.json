@@ -1,0 +1,121 @@
+{
+  "slug": "product-roadmap",
+  "name": "Product Roadmap",
+  "description": "A Now / Next / Later product roadmap that goes from idea to shipped, with a timeline view for stakeholders and a board for the product team's day-to-day.",
+  "category": "Product",
+  "icon": "🗺️",
+  "teams": [
+    {
+      "key": "PROD",
+      "name": "Product",
+      "description": "Owns the product roadmap, discovery, and prioritization.",
+      "icon": "🧭",
+      "color": "#6366f1"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Idea", "type": "backlog", "color": "#94a3b8", "position": 0, "description": "Raw idea, not yet validated." },
+    { "name": "Exploring", "type": "unstarted", "color": "#a855f7", "position": 1, "description": "In discovery — user research, feasibility, sizing." },
+    { "name": "Planned", "type": "unstarted", "color": "#64748b", "position": 2, "description": "Validated and scheduled onto the roadmap." },
+    { "name": "In Progress", "type": "started", "color": "#3b82f6", "position": 3, "description": "Actively being built." },
+    { "name": "Shipped", "type": "completed", "color": "#22c55e", "position": 4, "description": "Live for users." },
+    { "name": "Archived", "type": "canceled", "color": "#ef4444", "position": 5, "description": "Deprioritized or no longer relevant." }
+  ],
+  "labels": [
+    { "name": "now", "color": "#22c55e", "emoji": "🟢", "description": "This quarter." },
+    { "name": "next", "color": "#eab308", "emoji": "🟡", "description": "Next quarter." },
+    { "name": "later", "color": "#94a3b8", "emoji": "⚪", "description": "On the radar, not scheduled." },
+    { "name": "customer-request", "color": "#3b82f6", "emoji": "🙋", "description": "Directly requested by a customer." },
+    { "name": "strategic", "color": "#a855f7", "emoji": "♟️", "description": "Company-level strategic bet." }
+  ],
+  "issueTemplates": [
+    {
+      "ref": "mobile-v2",
+      "team": "PROD",
+      "issueType": "Epic",
+      "title": "Launch mobile app v2",
+      "descriptionMd": "Full rewrite of the mobile app on the new design system, with offline support.\n\n### Why\nMobile NPS has lagged web by 20 points for two quarters.\n\n### Success metric\nMobile WAU/MAU parity with web within 2 quarters of launch.",
+      "priority": 1,
+      "workflowState": "Planned",
+      "labels": ["now", "strategic"]
+    },
+    {
+      "team": "PROD",
+      "issueType": "Feature",
+      "title": "Add SSO (SAML + SCIM) for enterprise",
+      "descriptionMd": "Blocking three enterprise deals worth $180k ARR combined. Needs SAML login + SCIM provisioning.",
+      "priority": 1,
+      "workflowState": "In Progress",
+      "labels": ["now", "customer-request"]
+    },
+    {
+      "team": "PROD",
+      "issueType": "Feature",
+      "title": "Redesign onboarding flow",
+      "descriptionMd": "Current activation rate is 22% Day-7. Hypothesis: too many steps before first value. Test a 3-step version.",
+      "priority": 2,
+      "workflowState": "Exploring",
+      "labels": ["now"]
+    },
+    {
+      "team": "PROD",
+      "issueType": "Feature",
+      "title": "Public API v1",
+      "descriptionMd": "REST API with API keys, rate limiting, and OpenAPI docs. Table stakes for the integrations ecosystem.",
+      "priority": 2,
+      "workflowState": "Planned",
+      "labels": ["next", "strategic"]
+    },
+    {
+      "team": "PROD",
+      "issueType": "Feature",
+      "title": "AI-assisted search across issues and docs",
+      "descriptionMd": "Natural-language search over the workspace using embeddings. Requires the vector index work to land first.",
+      "priority": 3,
+      "workflowState": "Idea",
+      "labels": ["later", "strategic"]
+    },
+    {
+      "team": "PROD",
+      "issueType": "Feature",
+      "title": "Slack-native issue creation",
+      "descriptionMd": "Create and update issues from a Slack shortcut/slash command without leaving Slack.",
+      "priority": 3,
+      "workflowState": "Idea",
+      "labels": ["next", "customer-request"]
+    },
+    {
+      "team": "PROD",
+      "issueType": "Feature",
+      "title": "Custom fields for issues",
+      "descriptionMd": "Workspace-defined fields (text/number/select/date) shown on the issue detail and usable in filters/views.",
+      "priority": 2,
+      "workflowState": "Shipped",
+      "labels": ["now"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Roadmap Timeline",
+      "layout": "roadmap",
+      "description": "Now / Next / Later swimlanes across the quarter.",
+      "scope": "workspace",
+      "groupBy": "label",
+      "display": { "swimlaneBy": "label" }
+    },
+    {
+      "name": "Product Board",
+      "layout": "board",
+      "description": "Day-to-day board grouped by status.",
+      "scope": "team",
+      "groupBy": "status"
+    },
+    {
+      "name": "Shipped This Quarter",
+      "layout": "list",
+      "description": "A running changelog input — everything that hit \"Shipped\".",
+      "scope": "workspace",
+      "filter": [{ "field": "status", "op": "in", "values": ["Shipped"] }]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "slug": "content-calendar",
+  "name": "Content Calendar",
+  "description": "An editorial pipeline from idea to published, spanning blog, video, social, and newsletter — with a calendar view for scheduling and a board for the writing team's daily flow.",
+  "category": "Marketing",
+  "icon": "📅",
+  "teams": [
+    {
+      "key": "MKT",
+      "name": "Marketing",
+      "description": "Plans, drafts, and publishes content across every channel.",
+      "icon": "📣",
+      "color": "#f59e0b"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Idea", "type": "backlog", "color": "#94a3b8", "position": 0, "description": "Pitched, not yet greenlit." },
+    { "name": "Outline", "type": "unstarted", "color": "#64748b", "position": 1, "description": "Greenlit; outline in progress." },
+    { "name": "Drafting", "type": "started", "color": "#3b82f6", "position": 2, "description": "First draft being written." },
+    { "name": "Editing", "type": "started", "color": "#a855f7", "position": 3, "description": "In review / copyedit." },
+    { "name": "Scheduled", "type": "started", "color": "#f59e0b", "position": 4, "description": "Finalized and queued for a publish date." },
+    { "name": "Published", "type": "completed", "color": "#22c55e", "position": 5, "description": "Live." },
+    { "name": "Scrapped", "type": "canceled", "color": "#ef4444", "position": 6, "description": "Killed before publishing." }
+  ],
+  "labels": [
+    { "name": "blog", "color": "#3b82f6", "emoji": "📝", "description": "Long-form blog post." },
+    { "name": "video", "color": "#a855f7", "emoji": "🎬", "description": "Video content." },
+    { "name": "social", "color": "#22c55e", "emoji": "📱", "description": "Social media post/thread." },
+    { "name": "newsletter", "color": "#f59e0b", "emoji": "✉️", "description": "Email newsletter edition." },
+    { "name": "seo", "color": "#6366f1", "emoji": "🔍", "description": "Written primarily to rank for a keyword." },
+    { "name": "evergreen", "color": "#94a3b8", "emoji": "🌲", "description": "Not tied to a launch date; can run anytime." }
+  ],
+  "issueTemplates": [
+    {
+      "team": "MKT",
+      "issueType": "Content",
+      "title": "Blog: \"10 Linear alternatives compared for 2026\"",
+      "descriptionMd": "**Target keyword:** linear alternative\n**Word count target:** 2,500\n**CTA:** Try Planoda free\n\n### Outline\n1. What to look for in a Linear alternative\n2. Comparison table\n3. Deep dive per tool\n4. Verdict",
+      "priority": 2,
+      "workflowState": "Drafting",
+      "labels": ["blog", "seo"],
+      "dueDateOffsetDays": 10
+    },
+    {
+      "team": "MKT",
+      "issueType": "Content",
+      "title": "Video: Product demo — \"Planoda in 3 minutes\"",
+      "descriptionMd": "Homepage hero video. Script due before filming; needs product walkthrough of issue creation → board → AI agent.",
+      "priority": 1,
+      "workflowState": "Outline",
+      "labels": ["video", "evergreen"],
+      "dueDateOffsetDays": 21
+    },
+    {
+      "team": "MKT",
+      "issueType": "Content",
+      "title": "Social thread: \"Why we built propose/approve for AI agents\"",
+      "descriptionMd": "Founder-voice thread for X/LinkedIn tied to the agent-governance template launch.",
+      "priority": 2,
+      "workflowState": "Scheduled",
+      "labels": ["social"],
+      "dueDateOffsetDays": 2
+    },
+    {
+      "team": "MKT",
+      "issueType": "Content",
+      "title": "Newsletter: July product update",
+      "descriptionMd": "Monthly changelog digest. Pull highlights from the \"Shipped\" roadmap view.",
+      "priority": 3,
+      "workflowState": "Editing",
+      "labels": ["newsletter"],
+      "dueDateOffsetDays": 5
+    },
+    {
+      "team": "MKT",
+      "issueType": "Content",
+      "title": "Blog: \"Sprint board template for agile teams (free, open source)\"",
+      "descriptionMd": "Companion post to the `@planoda/templates` package launch. Link to GitHub + one-click import.",
+      "priority": 1,
+      "workflowState": "Idea",
+      "labels": ["blog", "seo"],
+      "dueDateOffsetDays": 14
+    },
+    {
+      "team": "MKT",
+      "issueType": "Content",
+      "title": "Case study: How [Customer] cut triage time by 60%",
+      "descriptionMd": "Needs customer interview + quote approval before drafting.",
+      "priority": 3,
+      "workflowState": "Idea",
+      "labels": ["blog", "evergreen"],
+      "dueDateOffsetDays": 30
+    }
+  ],
+  "views": [
+    {
+      "name": "Editorial Calendar",
+      "layout": "calendar",
+      "description": "Everything scheduled, on the day it publishes.",
+      "scope": "team"
+    },
+    {
+      "name": "Content Board",
+      "layout": "board",
+      "description": "Day-to-day board grouped by status.",
+      "scope": "team",
+      "groupBy": "status"
+    },
+    {
+      "name": "All Content — Table",
+      "layout": "table",
+      "description": "Full spreadsheet with channel, due date, and owner columns.",
+      "scope": "team"
+    }
+  ]
+}

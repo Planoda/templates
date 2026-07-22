@@ -1,0 +1,119 @@
+{
+  "slug": "hiring-pipeline",
+  "name": "Hiring Pipeline",
+  "description": "Track open requisitions as Epics with each candidate as a linked child issue moving through sourcing, screening, interviewing, and offer — one board per role, one view for the whole hiring plan.",
+  "category": "People / Recruiting",
+  "icon": "🧑‍💼",
+  "teams": [
+    {
+      "key": "PEOPLE",
+      "name": "People & Recruiting",
+      "description": "Owns open requisitions and the candidate pipeline.",
+      "icon": "🧑‍💼",
+      "color": "#22c55e"
+    }
+  ],
+  "workflowStates": [
+    { "name": "Sourced", "type": "backlog", "color": "#94a3b8", "position": 0, "description": "Identified, not yet contacted or applied." },
+    { "name": "Screening", "type": "unstarted", "color": "#64748b", "position": 1, "description": "Recruiter phone screen in progress." },
+    { "name": "Interviewing", "type": "started", "color": "#3b82f6", "position": 2, "description": "In the onsite/loop stage." },
+    { "name": "Offer", "type": "started", "color": "#a855f7", "position": 3, "description": "Offer extended, awaiting response." },
+    { "name": "Hired", "type": "completed", "color": "#22c55e", "position": 4, "description": "Accepted and starting." },
+    { "name": "Rejected", "type": "canceled", "color": "#ef4444", "position": 5, "description": "Not moving forward, at any stage." }
+  ],
+  "labels": [
+    { "name": "engineering", "color": "#6366f1", "emoji": "💻", "description": "Engineering req." },
+    { "name": "design", "color": "#a855f7", "emoji": "🎨", "description": "Design req." },
+    { "name": "sales", "color": "#22c55e", "emoji": "📈", "description": "Sales req." },
+    { "name": "urgent-req", "color": "#dc2626", "emoji": "🔥", "description": "Backfill or blocking hire — prioritize scheduling." },
+    { "name": "referral", "color": "#f59e0b", "emoji": "🤝", "description": "Came in through an employee referral." },
+    { "name": "senior", "color": "#3b82f6", "emoji": "⭐", "description": "Senior+ level role." }
+  ],
+  "issueTemplates": [
+    {
+      "ref": "req-backend-senior",
+      "team": "PEOPLE",
+      "issueType": "Requisition",
+      "title": "Req: Senior Backend Engineer",
+      "descriptionMd": "**Team:** Platform · **Level:** Senior · **Location:** Remote (US/EU)\n\n### Must-haves\n- 5+ years backend, Postgres, distributed systems\n\n### Nice-to-haves\n- Experience with realtime systems (WebSockets, pub/sub)",
+      "priority": 1,
+      "workflowState": "Interviewing",
+      "labels": ["engineering", "senior", "urgent-req"]
+    },
+    {
+      "ref": "cand-backend-1",
+      "parent": "req-backend-senior",
+      "team": "PEOPLE",
+      "issueType": "Candidate",
+      "title": "Candidate: J. Alvarez — Senior Backend Engineer",
+      "descriptionMd": "**Source:** Referral (from Priya, Eng)\n\n**Stage notes:** Strong system-design round. Onsite loop scheduled.",
+      "priority": 1,
+      "workflowState": "Interviewing",
+      "labels": ["referral"]
+    },
+    {
+      "ref": "cand-backend-2",
+      "parent": "req-backend-senior",
+      "team": "PEOPLE",
+      "issueType": "Candidate",
+      "title": "Candidate: R. Kim — Senior Backend Engineer",
+      "descriptionMd": "**Source:** LinkedIn outbound\n\n**Stage notes:** Phone screen passed, technical screen scheduled Thursday.",
+      "priority": 2,
+      "workflowState": "Screening",
+      "labels": []
+    },
+    {
+      "ref": "req-product-designer",
+      "team": "PEOPLE",
+      "issueType": "Requisition",
+      "title": "Req: Product Designer",
+      "descriptionMd": "**Team:** Product · **Level:** Mid-Senior · **Location:** Remote\n\n### Must-haves\n- Portfolio showing 0→1 product design work\n- Figma fluency",
+      "priority": 2,
+      "workflowState": "Sourced",
+      "labels": ["design"]
+    },
+    {
+      "ref": "req-ae",
+      "team": "PEOPLE",
+      "issueType": "Requisition",
+      "title": "Req: Account Executive",
+      "descriptionMd": "**Team:** Sales · **Level:** Mid · **Location:** Remote (US)\n\n### Must-haves\n- 3+ years closing SaaS deals $10k-$100k ACV",
+      "priority": 2,
+      "workflowState": "Offer",
+      "labels": ["sales"]
+    },
+    {
+      "ref": "cand-ae-1",
+      "parent": "req-ae",
+      "team": "PEOPLE",
+      "issueType": "Candidate",
+      "title": "Candidate: M. Chen — Account Executive",
+      "descriptionMd": "**Source:** Applied\n\n**Stage notes:** Offer extended, awaiting response (deadline Friday).",
+      "priority": 1,
+      "workflowState": "Offer",
+      "labels": []
+    }
+  ],
+  "views": [
+    {
+      "name": "Pipeline Board",
+      "layout": "board",
+      "description": "Every candidate across every open req, grouped by stage.",
+      "scope": "team",
+      "groupBy": "status"
+    },
+    {
+      "name": "Open Reqs",
+      "layout": "list",
+      "description": "Requisitions only (filter to the Requisition issue type), for the hiring-plan review.",
+      "scope": "team",
+      "filter": [{ "field": "issue_type", "op": "in", "values": ["Requisition"] }]
+    },
+    {
+      "name": "Candidates — Table",
+      "layout": "table",
+      "description": "Full candidate list with source, stage, and req columns.",
+      "scope": "team"
+    }
+  ]
+}
