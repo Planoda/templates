@@ -1,17 +1,16 @@
 {
   "name": "@planoda/templates",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Open-source, ready-to-import project templates (Sprint Board, Bug Triage, OKRs, Incident Response, and more) for Planoda — the AI-native Linear, ClickUp, Monday & Trello alternative.",
   "license": "MIT",
   "type": "module",
   "files": [
     "templates",
     "README.md",
-    "LICENSE",
-    "dist"
+    "LICENSE"
   ],
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "keywords": [
     "planoda",
